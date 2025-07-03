@@ -16,6 +16,18 @@ public:
         this->next = NULL;
         this->prev = NULL;
     }
+    // destructor
+    ~Node()
+    {
+        int value = this->data;
+        // memory free
+        if (this->next != NULL)
+        {
+            delete next;
+            this->next = NULL;
+        }
+        cout << "memory is free for " << value << endl;
+    }
 
     // Insertion at head
     void insertHead(int d, Node *&head)
@@ -65,6 +77,54 @@ public:
             forward->prev = node1;
         }
     }
+    void deleteNode(int position, Node *&head, Node *&tail)
+    {
+        if (position == 1)
+        {
+            Node *temp = head;
+            if (temp->next != NULL)
+            {
+                temp->next->prev = NULL;
+            }
+            else
+            {
+                // If deleting the only node, update tail too!
+                tail = NULL;
+            }
+            head = temp->next;
+            temp->next = NULL;
+            delete temp;
+        }
+        else
+        {
+            Node *curr = head;
+            Node *prev = NULL;
+            int cnt = 1;
+            while (cnt < position)
+            {
+                prev = curr;
+                curr = curr->next;
+                cnt++;
+            }
+
+            prev->next = curr->next;
+
+            if (curr->next != NULL)
+            {
+                curr->next->prev = prev;
+            }
+            else
+            {
+                //  If deleting the last node, update tail!
+                tail = prev;
+            }
+
+            curr->next = NULL;
+            curr->prev = NULL;
+
+            delete curr;
+        }
+    }
 
     void print(Node *&head)
     {
@@ -74,8 +134,7 @@ public:
             cout << temp->data << " ";
             temp = temp->next;
         }
-        cout<<endl;
-        
+        cout << endl;
     }
 };
 
@@ -90,8 +149,15 @@ int main()
     helper->insertHead(11, head);
     helper->insertTail(12, tail);
     helper->inserPos(15, head, 2);
+    helper->print(head);
+    helper->deleteNode(2, head, tail);
 
     helper->print(head);
+    cout<<head->data<<endl;
+    cout<<tail->data<<endl;
+    helper->deleteNode(3, head, tail);
+cout<<head->data<<endl;
+    cout<<tail->data<<endl;
 
-    return 0; 
+    return 0;
 }
